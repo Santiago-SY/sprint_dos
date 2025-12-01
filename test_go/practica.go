@@ -47,10 +47,24 @@ func symmetricDifference(firstList *LinkedListNode, secondList *LinkedListNode) 
 }
 
 func binarySearch(sorted []int, element int) int {
-	entrada := make([]int)
-	var inicio *LinkedListNode = sorted[0]
-	var final *LinkedListNode = sorted[len(sorted)-1]
+	var inicio int = 0
+	var final int = len(sorted) - 1
+	for inicio <= final {
+		var medio int = (inicio + final) / 2
+		if sorted[medio] == element {
+			return medio
+		}
 
+		if sorted[medio] < element {
+			inicio = medio + 1
+			//codigo para que recorra desde el medio hacia el final
+		}
+		if sorted[medio] > element {
+			final = medio - 1
+			//codigo para que recorra desde el inicio hasta el medio que ahora seria el final
+		}
+	}
+	return -1
 }
 
 /**
@@ -62,5 +76,20 @@ func binarySearch(sorted []int, element int) int {
  * It returns 2.
  */
 func countDuplicates(numbers []int) int {
+	var recorre int = 0
+	conteo := make(map[int]int)
+	var res int = 0
+	for recorre < len(numbers) {
+		conteo[numbers[recorre]]++
+		recorre++
+	}
+	for _, cantidad := range conteo {
 
+		if cantidad > 1 {
+
+			res++
+		}
+	}
+	println("la cantidad de repetidos es:")
+	return res
 }

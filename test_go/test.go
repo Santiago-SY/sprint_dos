@@ -487,17 +487,23 @@ func mutexes_test() {
 		}
 	}
 
-	wg.Go(func() {
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
 		doIncrement("a", 10000)
-	})
+	}()
 
-	wg.Go(func() {
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
 		doIncrement("a", 10000)
-	})
+	}()
 
-	wg.Go(func() {
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
 		doIncrement("b", 10000)
-	})
+	}()
 
 	wg.Wait()
 	fmt.Println(c.counters)
@@ -546,7 +552,7 @@ func main() {
 	//goroutines_test()
 	//Channel_test()
 	//channel_syncro_test()
-	//mutexes_test()
-	//pointers_test()
+	mutexes_test()
+	pointers_test()
 
 }
