@@ -2,31 +2,34 @@ package proyecto
 
 import (
 	"sync"
+	"time"
 )
 
-type player struct {
-	nombre string
-	ELO    int
+type Player struct {
+	Nombre     string
+	ELO        int
+	IsPlaying  bool      // ¿Está ocupado? Evita que entre a la cola dos veces
+	TimeJoined time.Time // Hora exacta a la que entró a la Queue (Para prioridad)
 }
 
-type nodo struct {
-	Player *player // Puntero al dato real
-	Next   *nodo   // Puntero al siguiente nodo
+type Nodo struct {
+	Player *Player // Puntero al dato real
+	Next   *Nodo   // Puntero al siguiente nodo
 }
 
 type Match struct {
 	ID      int
-	players []player
+	Players []Player
 }
 
 type Queue struct {
-	head *nodo      // Primer lugar (El que sale)
-	tail *nodo      // Ultimo lugar (El que entra)
+	head *Nodo      // Primer lugar (El que sale)
+	tail *Nodo      // Ultimo lugar (El que entra)
 	size int        // Para llevar la cuenta rapido
 	mu   sync.Mutex // Seguridad
 }
 
-type lobby struct {
+type Lobby struct {
 	mu      sync.Mutex
-	matches map[int]Match
+	Matches map[int]Match
 }
