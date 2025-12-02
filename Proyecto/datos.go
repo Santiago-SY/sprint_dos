@@ -9,14 +9,21 @@ type player struct {
 	ELO    int
 }
 
+type nodo struct {
+	Player *player // Puntero al dato real
+	Next   *nodo   // Puntero al siguiente nodo
+}
+
 type Match struct {
 	ID      int
 	players []player
 }
 
 type Queue struct {
-	mu      sync.Mutex
-	players []player
+	head *nodo      // Primer lugar (El que sale)
+	tail *nodo      // Ultimo lugar (El que entra)
+	size int        // Para llevar la cuenta rapido
+	mu   sync.Mutex // Seguridad
 }
 
 type lobby struct {
