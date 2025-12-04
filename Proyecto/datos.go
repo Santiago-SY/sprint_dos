@@ -1,4 +1,4 @@
-package proyecto
+package main
 
 import (
 	"sync"
@@ -8,7 +8,8 @@ import (
 type Player struct {
 	Nombre     string
 	ELO        int
-	IsPlaying  bool      // ¿Está ocupado? Evita que entre a la cola dos veces
+	EnCola     bool // ¿Está ocupado? Evita que entre a la cola dos veces
+	EnPartida  bool
 	TimeJoined time.Time // Hora exacta a la que entró a la Queue (Para prioridad)
 }
 
@@ -18,8 +19,13 @@ type Nodo struct {
 }
 
 type Match struct {
-	ID      int
-	Players []Player
+	ID    int
+	TeamA []*Player
+	TeamB []*Player
+
+	//utilidades
+	AvgELoA int
+	AvgELoB int
 }
 
 type Queue struct {

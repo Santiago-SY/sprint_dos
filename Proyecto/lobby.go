@@ -1,4 +1,4 @@
-package proyecto
+package main
 
 func (l *Lobby) AgregarMatch(m Match) {
 	l.mu.Lock()

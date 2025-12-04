@@ -1,4 +1,4 @@
-package proyecto
+package main
 
 import "time"
 
@@ -8,6 +8,7 @@ import "time"
 func (q *Queue) Enqueue(p *Player) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
+	p.EnCola = true
 	p.TimeJoined = time.Now()
 	nuevoNodo := &Nodo{
 		Player: p,
@@ -54,6 +55,7 @@ func (q *Queue) Remover_player(p *Player) {
 			q.tail = nil
 		}
 		q.size--
+		p.EnCola = false
 		return
 	}
 	anterior := q.head
