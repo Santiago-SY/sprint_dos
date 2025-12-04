@@ -1,6 +1,10 @@
 package proyecto
 
-import "time"
+import (
+	"fmt"
+	"math/rand/v2"
+	"time"
+)
 
 func encontrar_partida(q *Queue, referencia *Player, rango int) []*Player {
 	q.mu.Lock()
@@ -44,5 +48,17 @@ func Matchmaker(q *Queue, l *Lobby) {
 		time.Since(q.Top().TimeJoined)
 		rango := 50 + int(time.Second)*5
 		equipo := encontrar_partida(q, primero, rango)
+		if equipo != nil {
+			nuevalobby :=  Match[nuevalobby, rand.IntN(1000)]
+			for equipo != nil {
+				nuevalobby.append(jugadorsaliente)
+				q.Remover_player(jugadorsaliente)
+			}
+			l.AgregarMatch(nuevalobby)
+			fmt.Println("Partida encontrada", nuevalobby.ID)
+		}
+		if equipo == nil {
+			time.Sleep(time.Second)
+		}
 	}
 }
