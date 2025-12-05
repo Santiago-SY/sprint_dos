@@ -67,6 +67,7 @@ func (q *Queue) Remover_player(p *Player) {
 			}
 			anterior.Next = actual.Next
 			q.size--
+			p.EnCola = false
 			return
 		}
 		anterior = actual
@@ -90,4 +91,48 @@ func (q *Queue) EsVacia() bool {
 	defer q.mu.Unlock()
 
 	return q.head == nil
+}
+
+// Rotar mueve el primer jugador al final de la cola
+func (q *Queue) Rotar() {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+
+	// Si la cola está vacía o solo tiene 1 persona, no hacemos nada
+	if q.head == nil || q.head.Next == nil {
+		return
+	}
+
+	// Guardamos el nodo que vamos a mover (el actual primero)
+	nodoAmover := q.head
+
+	// El segundo pasa a ser el nuevo primero
+	q.head = q.head.Next
+
+	// El nodo movido se pega después del actual último
+	q.tail.Next = nodoAmover
+
+	// Actualizamos el puntero tail para que sea el nodo movido
+	q.tail = nodoAmover
+
+	// Importante: El nuevo último no debe apuntar a nadie
+	q.tail.Next = nil
+}
+
+// queue.go
+
+// Devuelve un slice con los primeros N jugadores (o menos si no hay tantos)
+// Sin sacarlos de la cola (Peek multiple)
+func (q *Queue) ObtenerPoolDeCandidatos(n int) []*Player {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+
+	candidatos := make([]*Player, 0, n)
+	actual := q.head
+
+	for actual != nil && len(candidatos) < n {
+		candidatos = append(candidatos, actual.Player)
+		actual = actual.Next
+	}
+	return candidatos
 }
