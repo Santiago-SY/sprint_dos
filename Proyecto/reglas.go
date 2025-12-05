@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"sync/atomic"
 	"time"
 )
@@ -38,16 +39,36 @@ func encontrar_partida(q *Queue, referencia *Player, rango int) []*Player {
 }
 
 func BalancearEquipos(jugadores []*Player) ([]*Player, []*Player) {
-	if jugadores != nil {
-		//	sort.Slice(people, func(i, j int) bool { return people[i].Name < people[j].Name })
-		sort.Slice(jugadores, func(jugadores[i].ELO, jugadores[j].ELO []*Player) bool {jugadores[i].ELO > jugadores[j].ELO})
-		teamA : make([]Player, 0, 5)
-		TeamB : make([]Player, 0, 5)
-		teamA.ELO = 0
-		teamB.ELO = 0
-	}
-}
+	// 1. ORDENAR: De Mayor a Menor ELO
+	// La función anónima recibe i, j (índices) y nosotros comparamos los valores
+	sort.Slice(jugadores, func(i, j int) bool {
+		return jugadores[i].ELO > jugadores[j].ELO
+	})
 
+	// 2. INICIALIZAR EQUIPOS
+	// Usamos make con []*Player (punteros)
+	teamA := make([]*Player, 0)
+	teamB := make([]*Player, 0)
+
+	eloA := 0
+	eloB := 0
+
+	// 3. REPARTIR (Algoritmo Greedy)
+	// Recorremos la lista ya ordenada jugador por jugador
+	for _, p := range jugadores {
+
+		// ¿Quién va perdiendo en suma de ELO? Le damos el siguiente jugador
+		if eloA <= eloB {
+			teamA = append(teamA, p)
+			eloA += p.ELO
+		} else {
+			teamB = append(teamB, p)
+			eloB += p.ELO
+		}
+	}
+
+	return teamA, teamB
+}
 func Matchmaker(q *Queue, l *Lobby) {
 	for {
 		if q.EsVacia() {
