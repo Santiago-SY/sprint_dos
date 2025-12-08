@@ -52,25 +52,35 @@ func encontrar_partida(q *Queue, referencia *Player, rango int) []*Player {
 }
 
 func BalancearEquipos(jugadores []*Player) ([]*Player, []*Player) {
-	// 1. ORDENAR: De Mayor a Menor ELO
-	// La función anónima recibe i, j (índices) y nosotros comparamos los valores
+	// 1. ORDENAR (Igual que antes)
 	sort.Slice(jugadores, func(i, j int) bool {
 		return jugadores[i].ELO > jugadores[j].ELO
 	})
 
-	// 2. INICIALIZAR EQUIPOS
-	// Usamos make con []*Player (punteros)
 	teamA := make([]*Player, 0)
 	teamB := make([]*Player, 0)
 
 	eloA := 0
 	eloB := 0
 
-	// 3. REPARTIR (Algoritmo Greedy)
-	// Recorremos la lista ya ordenada jugador por jugador
+	// 2. REPARTIR CON LÍMITE DE CUPO
 	for _, p := range jugadores {
 
-		// ¿Quién va perdiendo en suma de ELO? Le damos el siguiente jugador
+		// CASO 1: Equipo A está lleno (5), va forzado al B
+		if len(teamA) == 5 {
+			teamB = append(teamB, p)
+			eloB += p.ELO
+			continue
+		}
+
+		// CASO 2: Equipo B está lleno (5), va forzado al A
+		if len(teamB) == 5 {
+			teamA = append(teamA, p)
+			eloA += p.ELO
+			continue
+		}
+
+		// CASO 3: Ambos tienen lugar, aplicamos lógica Greedy normal
 		if eloA <= eloB {
 			teamA = append(teamA, p)
 			eloA += p.ELO
@@ -104,10 +114,10 @@ func AplicarResultados(ganadores []*Player, perdedores []*Player) {
 
 func SimularPartida(m Match, l *Lobby) {
 	// 1. Simular tiempo de juego
-	time.Sleep(3 * time.Second)
+	//time.Sleep(3 * time.Second)
 
 	// --- OPCIÓN B: MODO PRESENTACIÓN ---
-	//time.Sleep(5 * time.Second)
+	time.Sleep(5 * time.Second)
 
 	// 2. Decidir Ganador (50/50)
 	// rand.IntN(2) devuelve 0 o 1
@@ -168,7 +178,7 @@ func Matchmaker(q *Queue, l *Lobby) {
 
 			// Calculamos su rango personal
 			tiempoEspera := time.Since(candidato.TimeJoined)
-			rango := 50 + (int(tiempoEspera.Seconds()) * 50)
+			rango := 50 + (int(tiempoEspera.Seconds()) * 25)
 
 			// Buscamos equipo PARA ESTE candidato
 			equipo := encontrar_partida(q, candidato, rango)

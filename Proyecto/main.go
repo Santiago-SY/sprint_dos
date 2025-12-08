@@ -62,8 +62,8 @@ func main() {
 		// Hacemos que intenten entrar muy rápido (cada 10-50ms) para saturar la cola
 		// y ver cómo el matchmaker trabaja bajo presión.
 		//Opcion A = Performance
-		time.Sleep(time.Duration(rand.IntN(10)+1) * time.Millisecond)
+		//time.Sleep(time.Duration(rand.IntN(10)+1) * time.Millisecond)
 		//Opcion B= Presentacion
-		//time.Sleep(time.Duration(rand.IntN(500)+200) * time.Millisecond)
+		time.Sleep(time.Duration(rand.IntN(500)+200) * time.Millisecond)
 	}
 }
